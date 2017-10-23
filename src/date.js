@@ -696,7 +696,13 @@
         //No applicable rule found in this and in previous year.
         return null;
       }
-      return applicableRules[pinpoint - 1][1];
+      var result = applicableRules[pinpoint - 1][1];
+      //console.log("XXX", result);
+      //var timestamp =  convertRuleToExactDateAndTime([year, result]);// EXACT_DATE_TIME[year][result];
+      var timestamp =  EXACT_DATE_TIME[year][result];
+      result = [].concat(result).concat([ timestamp ]);
+      //return applicableRules[pinpoint - 1][1];
+      return result;
     }
     function getAdjustedOffset(off, rule) {
       return -Math.ceil(rule[6] - off);
@@ -879,14 +885,18 @@
         }
       }
       var z = getZone(dt, tz);
-      var off = z[0];
+      var boff = z[0];
       //See if the offset needs adjustment.
       var rule = getRule(dt, z, isUTC);
+      //console.log("XXX:", rule);
       if (rule) {
-        off = getAdjustedOffset(off, rule);
+        var off = getAdjustedOffset(boff, rule);
       }
       var abbr = getAbbreviation(z, rule);
-      return { tzOffset: off, tzAbbr: abbr };
+      //console.log('XXX', rule);
+      var timestamp = rule && rule[rule.length-1] || null;
+      if (timestamp && timestamp > dt) timestamp.setFullYear(timestamp.getFullYear()-1); 
+      return { tzOffset: off, basicOffset: boff, tzAbbr: abbr, timestamp: timestamp };
     };
   };
 }).call(this);
