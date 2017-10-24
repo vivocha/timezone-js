@@ -890,8 +890,9 @@
       }
       var abbr = getAbbreviation(z, rule);
       var timestamp = rule && rule[rule.length-1] || null;
-      if (timestamp && timestamp > dt) timestamp.setFullYear(timestamp.getFullYear()-1); 
-      return { tzOffset: off, tzAbbr: abbr, timestamp: timestamp };
+      var tmp = timestamp && new Date(timestamp) || null;
+      if (tmp && tmp > dt) tmp.setFullYear(tmp.getFullYear()-1);
+      return { tzOffset: off, tzAbbr: abbr, timestamp: tmp };
     };
   };
 }).call(this);
